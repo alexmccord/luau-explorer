@@ -15,5 +15,5 @@ add_dependencies(backend Luau.Analysis Luau.Compiler)
 target_compile_features(backend PRIVATE cxx_std_17)
 target_link_libraries(backend Luau.Analysis Luau.Compiler)
 target_sources(backend PRIVATE
-    backend/main.cpp
+    src/main.cpp
 )

@@ -8,11 +8,6 @@ FetchContent_Declare(luau
 )
 FetchContent_MakeAvailable(luau)
 
-# if(NOT MSVC)
-#     # Works around gcc 9.x bug where locals are sometimes unused in constexpr context.
-#     add_compile_options(-Wno-unused-variable -Wno-unused-but-set-variable)
-# endif()
-
 project(backend LANGUAGES CXX)
 
 add_executable(backend)

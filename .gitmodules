@@ -1,0 +1,3 @@
+[submodule "backend/luau"]
+	path = backend/luau
+	url = https://github.com/Roblox/luau

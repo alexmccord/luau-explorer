@@ -1,11 +1,11 @@
 #pragma once
 
+#include <optional>
 #include <string>
-#include <lua.h>
-#include <luacode.h>
+#include <vector>
 
 namespace backend {
 
-std::string run_luau_code(const std::string& code);
+std::optional<std::string> run_luau_code(const std::string& code);
 
 } // namespace backend

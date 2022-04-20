@@ -1,11 +1,14 @@
-#include <lualib.h>
 #include <memory>
+
+#include <lua.h>
+#include <luacode.h>
+#include <lualib.h>
 
 #include "backend/vm.h"
 
 namespace backend {
 
-std::string run_luau_code(const std::string& code) {
+std::optional<std::string> run_luau_code(const std::string& code) {
     std::unique_ptr<lua_State, void(*)(lua_State*)> state{luaL_newstate(), lua_close};
     lua_State* L = state.get();
 
@@ -13,6 +16,7 @@ std::string run_luau_code(const std::string& code) {
     luaL_sandbox(L);
     luaL_sandboxthread(L);
 
+    // TODO: parse errors and compile errors
     size_t bytecodeSize = 0;
     char* bytecode = luau_compile(code.data(), code.size(), nullptr, &bytecodeSize);
     int result = luau_load(L, "chunk", bytecode, bytecodeSize, 0);
@@ -24,13 +28,23 @@ std::string run_luau_code(const std::string& code) {
 
         std::string error(msg, len);
         lua_pop(L, 1);
-
         return error;
     }
 
     result = lua_resume(L, nullptr, 0);
 
-    if (result != 0) {
+    if (result == 0) {
+        int n = lua_gettop(L);
+
+        if (n) {
+            luaL_checkstack(L, LUA_MINSTACK, "too many results to print");
+            lua_getglobal(L, "print");
+            lua_insert(L, 1);
+            lua_pcall(L, n, 0, 0);
+        }
+
+        return std::nullopt;
+    } else {
         std::string error;
 
         if (result == LUA_YIELD) {
@@ -43,8 +57,6 @@ std::string run_luau_code(const std::string& code) {
         error += lua_debugtrace(L);
         return error;
     }
-
-    return "";
 }
 
 } // namespace backend

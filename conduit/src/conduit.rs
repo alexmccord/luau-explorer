@@ -1,7 +1,7 @@
 use std::process::{Child, Command, Stdio};
 
 pub struct Conduit {
-    pub(crate) process: Child,
+    process: Child,
 }
 
 impl Conduit {

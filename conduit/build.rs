@@ -1,5 +1,5 @@
-use std::process::{Command};
 use std::path::PathBuf;
+use std::process::Command;
 
 struct Location {
     build_dir: PathBuf,

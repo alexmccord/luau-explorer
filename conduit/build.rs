@@ -50,14 +50,10 @@ fn main() {
     let mut build_command = Command::new("cmake");
     build_command
         .current_dir(&dest)
-        .arg("--build")
-        .arg(".")
-        .arg("--target")
-        .arg("backend")
-        .arg("--config")
-        .arg("Debug") // TODO: Release. MinSizeRel. RelWithDebInfo.
-        .arg("--parallel")
-        .arg("16"); // TODO: Figure out something about 16. It's arbitrary.
+        .args(["--build", "."])
+        .args(["--target", "backend"])
+        .args(["--config", "Debug"]) // TODO: Release. MinSizeRel. RelWithDebInfo.
+        .args(["--parallel", "16"]); // TODO: Figure out something about 16. It's arbitrary.
 
     if let Err(e) = build_command.status() {
         panic!("build step failed:\n{}", e);

@@ -17,7 +17,7 @@ impl Conduit {
         Command::new(cwd.join("backend"))
     }
 
-    fn new() -> Conduit {
+    pub fn new() -> Conduit {
         let child = Conduit::launch()
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())

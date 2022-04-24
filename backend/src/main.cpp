@@ -20,7 +20,7 @@ static std::string read_stdin() {
 
     std::string s;
     char buf[4096];
-    while (fgets(buf, length + 1, stdin) && s.size() <= length)
+    while (s.size() < length && fgets(buf, length + 1, stdin))
         s.append(buf);
     return s;
 }

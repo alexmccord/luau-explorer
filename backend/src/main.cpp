@@ -58,6 +58,9 @@ int main() {
     } else if (opcode == 4) {
         std::string code = read_stdin();
         std::cout << backend::jsonify(code) << std::endl;
+    } else if (opcode == 5) {
+        std::string code = read_stdin();
+        std::cout << backend::hydrate(code) << std::endl;
     } else {
         std::cerr << "Unknown opcode " << int(opcode) << std::endl;
         return 1;

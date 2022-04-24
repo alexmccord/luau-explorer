@@ -1,6 +1,8 @@
 #include <iostream>
 
 #include <Luau/BuiltinDefinitions.h>
+#include <Luau/TypeAttach.h>
+#include <Luau/Transpiler.h>
 
 #include "backend/analysis.h"
 
@@ -74,6 +76,17 @@ Luau::LintResult lint(const std::string& code) {
 Luau::CheckResult check(const std::string& code) {
     LuauAnalyzer analyzer{code};
     return analyzer.frontend.check("module");
+}
+
+std::string hydrate(const std::string& code) {
+    LuauAnalyzer analyzer{code};
+    (void)analyzer.frontend.check("module");
+
+    Luau::SourceModule* sm = analyzer.frontend.getSourceModule("module");
+    Luau::ModulePtr m = analyzer.frontend.moduleResolver.getModule("module");
+    Luau::attachTypeData(*sm, *m);
+
+    return Luau::transpileWithTypes(*sm->root);
 }
 
 } // namespace backend

@@ -11,6 +11,18 @@ static int assertionHandler(const char* expr, const char* file, int line, const 
     return 1;
 }
 
+static std::string read_stdin() {
+    std::string length_s;
+    length_s.reserve(sizeof(size_t));
+    fgets(length_s.data(), sizeof(size_t) + 1, stdin);
+    size_t length = std::stoull(length_s);
+
+    char buf[4096];
+    fgets(buf, length + 1, stdin);
+
+    return std::string(buf, length + 1);
+}
+
 int main() {
     Luau::assertHandler() = assertionHandler;
 
@@ -18,9 +30,17 @@ int main() {
         if (strncmp(flag->name, "Luau", 4) == 0)
             flag->value = true;
 
-    std::string s;
-    std::cin >> s;
-    if (auto error = backend::run_luau_code(s)) {
-        std::cerr << *error << std::endl;
+    char opcode = fgetc(stdin);
+
+    if (opcode == 1) {
+        std::string code = read_stdin();
+
+        if (auto error = backend::run(code)) {
+            std::cerr << *error << std::endl;
+            return 1;
+        }
+    } else {
+        std::cerr << "Unknown opcode " << int(opcode) << std::endl;
+        return 1;
     }
 }

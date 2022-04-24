@@ -5,6 +5,6 @@
 
 namespace backend {
 
-std::optional<std::string> run_luau_code(const std::string& code);
+std::optional<std::string> run(const std::string& code);
 
 } // namespace backend

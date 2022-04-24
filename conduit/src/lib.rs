@@ -1,2 +1,2 @@
 mod conduit;
-pub use crate::conduit::Conduit;
+pub use crate::conduit::{Conduit, ConduitRequest, Output};

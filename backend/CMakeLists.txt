@@ -12,6 +12,6 @@ target_link_libraries(backend PUBLIC Luau.Ast Luau.Analysis Luau.Compiler Luau.V
 target_sources(backend PRIVATE
     include/backend/vm.h
 
-    src/vm.cpp
     src/main.cpp
+    src/vm.cpp
 )

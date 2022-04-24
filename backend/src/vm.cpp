@@ -8,7 +8,7 @@
 
 namespace backend {
 
-std::optional<std::string> run_luau_code(const std::string& code) {
+std::optional<std::string> run(const std::string& code) {
     std::unique_ptr<lua_State, void(*)(lua_State*)> state{luaL_newstate(), lua_close};
     lua_State* L = state.get();
 

@@ -4,7 +4,8 @@ use conduit::{Conduit, ConduitRequest, Output};
 fn ascribe_types_from_type_inference() {
     let request = ConduitRequest::Hydrate {
         code: "--!strict\n\
-               local x = 5".into(),
+               local x = 5"
+            .into(),
     };
 
     let result = Conduit::dispatch(request).unwrap();

@@ -5,11 +5,11 @@ pub enum ConduitRequest {
     VM { code: String },
     Lint { code: String },
     Check { code: String },
-    /// Note that the response of json encoding is not formatted.
-    /// If you want to pretty it up, do it yourself.
+    // Note that the response of json encoding is not formatted.
+    // If you want to pretty it up, do it yourself.
     Json { code: String },
-    /// The result is not quite perfect. I have an idea of how to
-    /// improve it, but let's live with it for now.
+    // The result is not quite perfect. I have an idea of how to
+    // improve it, but let's live with it for now.
     Hydrate { code: String },
 }
 
@@ -56,7 +56,7 @@ impl Into<Vec<u8>> for ConduitRequest {
                 bytestr.extend(format!("{:0>10}", code.len() as i32).as_bytes());
                 bytestr.extend(code.as_bytes());
             }
-            ConduitRequest::Hydrate { code} => {
+            ConduitRequest::Hydrate { code } => {
                 bytestr.extend(format!("{:0>10}", code.len() as i32).as_bytes());
                 bytestr.extend(code.as_bytes());
             }

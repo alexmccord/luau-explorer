@@ -3,9 +3,7 @@ use conduit::{Conduit, ConduitRequest, Output};
 #[test]
 fn ascribe_types_from_type_inference() {
     let request = ConduitRequest::Hydrate {
-        code: "--!strict\n\
-               local x = 5"
-            .into(),
+        code: "--!strict\nlocal x = 5".into(),
     };
 
     let result = Conduit::dispatch(request).unwrap();

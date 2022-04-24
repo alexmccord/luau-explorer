@@ -21,7 +21,7 @@ fn print_five() {
 #[test]
 fn ensure_that_newlines_doesnt_matter() {
     let request = ConduitRequest::VM {
-        code: "print(5)\r\nprint(5)".into(),
+        code: "print(5)\nprint(5)".into(),
     };
 
     let result = Conduit::dispatch(request).unwrap();

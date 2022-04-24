@@ -30,14 +30,18 @@ void report(const Luau::CheckResult& result) {
     }
 }
 
-SingleSourceFileResolver::SingleSourceFileResolver(const std::string& code)
-    : code(code)
-{
-}
+struct SingleSourceFileResolver : public Luau::FileResolver {
+    std::string code;
 
-std::optional<Luau::SourceCode> SingleSourceFileResolver::readSource(const Luau::ModuleName& name)  {
-    return Luau::SourceCode{code};
-}
+    SingleSourceFileResolver(const std::string& code)
+        : code(code)
+    {
+    }
+
+    std::optional<Luau::SourceCode> readSource(const Luau::ModuleName& name) override {
+        return Luau::SourceCode{code};
+    }
+};
 
 struct LuauAnalyzer {
     // Because SingleSourceFileResolver always return the source code, we don't care about ModuleNames.

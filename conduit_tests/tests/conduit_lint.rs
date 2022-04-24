@@ -39,7 +39,8 @@ fn no_errors_exit_zero() {
 fn disabling_a_lint_pass() {
     let request = ConduitRequest::Lint {
         code: "--!nolint LocalUnused
-               local x = 5".into()
+               local x = 5"
+            .into(),
     };
 
     let result = Conduit::dispatch(request).unwrap();

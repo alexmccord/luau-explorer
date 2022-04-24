@@ -18,6 +18,18 @@ void report(const Luau::LintResult& result) {
         report(w);
 }
 
+static void report(const Luau::TypeError& e) {
+    std::cerr << "TypeError: " << Luau::toString(e) << std::endl;
+}
+
+void report(const Luau::CheckResult& result) {
+    for (const auto& e : result.errors) {
+        if (Luau::get<Luau::SyntaxError>(e))
+            continue;
+        report(e);
+    }
+}
+
 SingleSourceFileResolver::SingleSourceFileResolver(const std::string& code)
     : code(code)
 {
@@ -27,18 +39,37 @@ std::optional<Luau::SourceCode> SingleSourceFileResolver::readSource(const Luau:
     return Luau::SourceCode{code};
 }
 
-Luau::LintResult lint(const std::string& code) {
-    SingleSourceFileResolver file_resolver{code};
-    Luau::NullConfigResolver config_resolver;
-    Luau::FrontendOptions frontend_options{/*retainFullTypeGraphs=*/true};
-    Luau::Frontend frontend{&file_resolver, &config_resolver, frontend_options};
-    Luau::registerBuiltinTypes(frontend.typeChecker);
-
-    // Really doesn't matter what we call it. SingleSourceFileResolver always return the source code.
+struct LuauAnalyzer {
+    // Because SingleSourceFileResolver always return the source code, we don't care about ModuleNames.
     // We might eventually support multiple modules, but that's a future thing.
-    Luau::LintOptions lint_options;
-    lint_options.warningMask = ~0ull;
-    return frontend.lint("module", lint_options);
+    SingleSourceFileResolver file_resolver;
+    Luau::NullConfigResolver config_resolver;
+    Luau::Frontend frontend;
+
+    LuauAnalyzer(const std::string& code)
+        : file_resolver{code}
+        , frontend{&file_resolver, &config_resolver, {/*retainFullTypeGraphs=*/true}}
+    {
+        Luau::LintOptions lint_options;
+        lint_options.warningMask = ~0ull;
+
+        config_resolver.defaultConfig.enabledLint = lint_options;
+        config_resolver.defaultConfig.mode = Luau::Mode::Nonstrict;
+        config_resolver.defaultConfig.parseOptions = Luau::ParseOptions{true, true, true, true};
+
+        Luau::registerBuiltinTypes(frontend.typeChecker);
+        Luau::freeze(frontend.typeChecker.globalTypes);
+    }
+};
+
+Luau::LintResult lint(const std::string& code) {
+    LuauAnalyzer analyzer{code};
+    return analyzer.frontend.lint("module");
+}
+
+Luau::CheckResult check(const std::string& code) {
+    LuauAnalyzer analyzer{code};
+    return analyzer.frontend.check("module");
 }
 
 } // namespace backend

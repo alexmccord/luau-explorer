@@ -6,8 +6,7 @@
 #include "backend/analysis.h"
 #include "backend/vm.h"
 
-static int assertionHandler(const char* expr, const char* file, int line, const char* function)
-{
+static int assertionHandler(const char* expr, const char* file, int line, const char* function) {
     std::cerr << file << "(" << line << "): ASSERTION FAILED: " << expr << std::endl;
     return 1;
 }
@@ -47,6 +46,13 @@ int main() {
         Luau::LintResult result = backend::lint(code);
         backend::report(result);
         if (!result.errors.empty() || !result.warnings.empty())
+            return 1;
+    } else if (opcode == 3) {
+        std::string code = read_stdin();
+
+        Luau::CheckResult result = backend::check(code);
+        backend::report(result);
+        if (!result.errors.empty())
             return 1;
     } else {
         std::cerr << "Unknown opcode " << int(opcode) << std::endl;

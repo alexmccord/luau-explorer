@@ -34,3 +34,22 @@ fn no_errors_exit_zero() {
         }
     )
 }
+
+#[test]
+fn disabling_a_lint_pass() {
+    let request = ConduitRequest::Lint {
+        code: "--!nolint LocalUnused
+               local x = 5".into()
+    };
+
+    let result = Conduit::dispatch(request).unwrap();
+
+    assert_eq!(
+        result,
+        Output {
+            status: Some(0),
+            stdout: "".into(),
+            stderr: "".into(),
+        }
+    )
+}

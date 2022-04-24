@@ -36,7 +36,9 @@ Luau::LintResult lint(const std::string& code) {
 
     // Really doesn't matter what we call it. SingleSourceFileResolver always return the source code.
     // We might eventually support multiple modules, but that's a future thing.
-    return frontend.lint("module");
+    Luau::LintOptions lint_options;
+    lint_options.warningMask = ~0ull;
+    return frontend.lint("module", lint_options);
 }
 
 } // namespace backend

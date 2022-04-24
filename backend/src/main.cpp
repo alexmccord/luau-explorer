@@ -42,7 +42,6 @@ int main() {
             return 1;
         }
     } else if (opcode == 2) {
-        // TODO: read a bitmask of 64 bits to enable some lints
         std::string code = read_stdin();
 
         Luau::LintResult result = backend::lint(code);

@@ -4,6 +4,7 @@
 #include <Luau/Common.h>
 
 #include "backend/analysis.h"
+#include "backend/json.h"
 #include "backend/vm.h"
 
 static int assertionHandler(const char* expr, const char* file, int line, const char* function) {
@@ -54,6 +55,9 @@ int main() {
         backend::report(result);
         if (!result.errors.empty())
             return 1;
+    } else if (opcode == 4) {
+        std::string code = read_stdin();
+        std::cout << backend::jsonify(code) << std::endl;
     } else {
         std::cerr << "Unknown opcode " << int(opcode) << std::endl;
         return 1;

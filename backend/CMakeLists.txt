@@ -11,9 +11,11 @@ target_include_directories(backend PUBLIC include luau/Analysis/include luau/Com
 target_link_libraries(backend PUBLIC Luau.Ast Luau.Analysis Luau.Compiler Luau.VM)
 target_sources(backend PRIVATE
     include/backend/analysis.h
+    include/backend/json.h
     include/backend/vm.h
 
     src/analysis.cpp
+    src/json.cpp
     src/main.cpp
     src/vm.cpp
 )

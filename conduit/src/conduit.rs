@@ -5,6 +5,9 @@ pub enum ConduitRequest {
     VM { code: String },
     Lint { code: String },
     Check { code: String },
+    /// Note that the response of json encoding is not formatted.
+    /// If you want to pretty it up, do it yourself.
+    Json { code: String },
 }
 
 impl ConduitRequest {
@@ -15,6 +18,7 @@ impl ConduitRequest {
             ConduitRequest::VM { .. } => 1,
             ConduitRequest::Lint { .. } => 2,
             ConduitRequest::Check { .. } => 3,
+            ConduitRequest::Json { .. } => 4,
         }
     }
 
@@ -41,6 +45,10 @@ impl Into<Vec<u8>> for ConduitRequest {
                 bytestr.extend(code.as_bytes());
             }
             ConduitRequest::Check { code } => {
+                bytestr.extend(format!("{:0>10}", code.len() as i32).as_bytes());
+                bytestr.extend(code.as_bytes());
+            }
+            ConduitRequest::Json { code } => {
                 bytestr.extend(format!("{:0>10}", code.len() as i32).as_bytes());
                 bytestr.extend(code.as_bytes());
             }

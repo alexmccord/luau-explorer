@@ -17,10 +17,11 @@ static std::string read_stdin() {
     fgets(length_s.data(), sizeof(size_t) + 1, stdin);
     size_t length = std::stoull(length_s);
 
+    std::string s;
     char buf[4096];
-    fgets(buf, length + 1, stdin);
-
-    return std::string(buf, length + 1);
+    while (fgets(buf, length + 1, stdin) && s.size() <= length)
+        s.append(buf);
+    return s;
 }
 
 int main() {

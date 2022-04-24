@@ -1,5 +1,5 @@
 use std::io::Write;
-use std::process::{Child, ChildStdin, Command, Stdio};
+use std::process::{Child, Command, Stdio};
 
 pub enum ConduitRequest {
     VM { code: String },
@@ -12,6 +12,10 @@ impl ConduitRequest {
         match self {
             ConduitRequest::VM { .. } => 1,
         }
+    }
+
+    fn into_bytes(self) -> Vec<u8> {
+        self.into()
     }
 }
 
@@ -42,7 +46,6 @@ pub struct Output {
 
 pub struct Conduit {
     process: Child,
-    stdin: ChildStdin,
 }
 
 impl Conduit {
@@ -59,23 +62,25 @@ impl Conduit {
     }
 
     fn new() -> Conduit {
-        let mut process = Command::new(Conduit::which())
+        let process = Command::new(Conduit::which())
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
             .spawn()
             .unwrap();
 
-        let stdin = process.stdin.take().unwrap();
-
-        Conduit { process, stdin }
+        Conduit { process }
     }
 
     pub fn launch(request: ConduitRequest) -> Result<Output, String> {
-        let mut conduit = Conduit::new();
-        let buf: Vec<u8> = request.into();
+        let conduit = Conduit::new();
 
-        if let Err(e) = conduit.stdin.write_all(buf.as_slice()) {
+        let mut stdin = match conduit.process.stdin.as_ref() {
+            Some(stdin) => stdin,
+            None => return Err("Backend process has no stdin handle?".into()),
+        };
+
+        if let Err(e) = stdin.write_all(request.into_bytes().as_slice()) {
             return Err(e.to_string());
         }
 

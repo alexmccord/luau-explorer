@@ -3,6 +3,7 @@
 
 #include <Luau/Common.h>
 
+#include "backend/analysis.h"
 #include "backend/vm.h"
 
 static int assertionHandler(const char* expr, const char* file, int line, const char* function)
@@ -13,9 +14,9 @@ static int assertionHandler(const char* expr, const char* file, int line, const 
 
 static std::string read_stdin() {
     std::string length_s;
-    length_s.reserve(sizeof(size_t));
-    fgets(length_s.data(), sizeof(size_t) + 1, stdin);
-    size_t length = std::stoull(length_s);
+    length_s.reserve(11);
+    fgets(length_s.data(), 11, stdin);
+    int length = std::stoi(length_s);
 
     std::string s;
     char buf[4096];
@@ -40,6 +41,14 @@ int main() {
             std::cerr << *error << std::endl;
             return 1;
         }
+    } else if (opcode == 2) {
+        // TODO: read a bitmask of 64 bits to enable some lints
+        std::string code = read_stdin();
+
+        Luau::LintResult result = backend::lint(code);
+        backend::report(result);
+        if (!result.errors.empty() || !result.warnings.empty())
+            return 1;
     } else {
         std::cerr << "Unknown opcode " << int(opcode) << std::endl;
         return 1;

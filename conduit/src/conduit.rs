@@ -3,6 +3,7 @@ use std::process::{Child, Command, Stdio};
 
 pub enum ConduitRequest {
     VM { code: String },
+    Lint { code: String },
 }
 
 impl ConduitRequest {
@@ -11,6 +12,7 @@ impl ConduitRequest {
     fn discriminant(&self) -> u8 {
         match self {
             ConduitRequest::VM { .. } => 1,
+            ConduitRequest::Lint { .. } => 2,
         }
     }
 
@@ -28,7 +30,12 @@ impl Into<Vec<u8>> for ConduitRequest {
 
         match self {
             ConduitRequest::VM { code } => {
-                bytestr.extend(format!("{:0>8}", code.len()).as_bytes());
+                // 10 bytes for right padding is because i32's upper bound in string form is that long.
+                bytestr.extend(format!("{:0>10}", code.len() as i32).as_bytes());
+                bytestr.extend(code.as_bytes());
+            }
+            ConduitRequest::Lint { code } => {
+                bytestr.extend(format!("{:0>10}", code.len() as i32).as_bytes());
                 bytestr.extend(code.as_bytes());
             }
         }

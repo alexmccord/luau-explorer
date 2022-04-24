@@ -11,6 +11,9 @@ pub enum ConduitRequest {
     // The result is not quite perfect. I have an idea of how to
     // improve it, but let's live with it for now.
     Hydrate { code: String },
+    // TODO: bytecode dump
+    // TODO: autocomplete?
+    // TODO: what else?
 }
 
 impl ConduitRequest {

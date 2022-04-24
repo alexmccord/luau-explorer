@@ -79,7 +79,7 @@ impl Conduit {
         Conduit { process }
     }
 
-    pub fn launch(request: ConduitRequest) -> Result<Output, String> {
+    pub fn dispatch(request: ConduitRequest) -> Result<Output, String> {
         let conduit = Conduit::new();
 
         let mut stdin = match conduit.process.stdin.as_ref() {

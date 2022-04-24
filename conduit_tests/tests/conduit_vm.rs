@@ -1,12 +1,12 @@
 use conduit::{Conduit, ConduitRequest, Output};
 
 #[test]
-fn launch_vm() {
+fn print_five() {
     let request = ConduitRequest::VM {
         code: "print(5)".into(),
     };
 
-    let result = Conduit::launch(request).unwrap();
+    let result = Conduit::dispatch(request).unwrap();
 
     assert_eq!(
         result,
@@ -24,7 +24,7 @@ fn ensure_that_newlines_doesnt_matter() {
         code: "print(5)\r\nprint(5)".into(),
     };
 
-    let result = Conduit::launch(request).unwrap();
+    let result = Conduit::dispatch(request).unwrap();
 
     assert_eq!(
         result,
@@ -42,7 +42,7 @@ fn errors_are_written_to_stderr() {
         code: "error(\"some error!\")".into(),
     };
 
-    let result = Conduit::launch(request).unwrap();
+    let result = Conduit::dispatch(request).unwrap();
 
     assert_eq!(
         result,
@@ -60,7 +60,7 @@ fn mix_of_stdout_and_stderr() {
         code: "print(5)\nerror(\"some error!\")".into(),
     };
 
-    let result = Conduit::launch(request).unwrap();
+    let result = Conduit::dispatch(request).unwrap();
 
     assert_eq!(
         result,
@@ -78,7 +78,7 @@ fn print_some_null_bytes() {
         code: "print(\"\\0\")".into(),
     };
 
-    let result = Conduit::launch(request).unwrap();
+    let result = Conduit::dispatch(request).unwrap();
 
     assert_eq!(
         result,

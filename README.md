@@ -1,5 +1,7 @@
 # luau-explorer
 
+Work in progress. Slash commands are horrible to work with, so much so I'm not feeling motivated to finish this.
+
 Similar to Godbolt, but for Luau on Discord integrating with Luau's compiler API.
 
 We'd like to:
